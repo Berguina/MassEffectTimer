@@ -19,6 +19,10 @@ using System.Globalization;
 using System.Resources;
 using System.Media;
 using System.Reflection;
+using System.Runtime.InteropServices;
+using Microsoft.Win32.SafeHandles;
+using System.Threading;
+using System.ComponentModel;
 
 
 
@@ -39,7 +43,12 @@ namespace MassEffectTimer
         public int hours;
         public bool print_hours = false;
         public DispatcherTimer timer1;
+       
+        public  DateTime endtime;
+       // public Thread waker;
+        public Waker waker;
         public int total_time;
+        public int current_rest_time;
         public TextBox textBox1;
         public TextBox textBox2;
         public TextBox textBox3;
@@ -47,6 +56,39 @@ namespace MassEffectTimer
         public Window dynamicPanelReady;
         public SoundPlayer player;
         public SoundPlayer player1 ;
+
+        //[DllImport("kernel32.dll")]
+        //public static extern SafeWaitHandle CreateWaitableTimer(IntPtr lpTimerAttributes, bool bManualReset, string lpTimerName);
+
+        //[DllImport("kernel32.dll", SetLastError = true)]
+        //[return: MarshalAs(UnmanagedType.Bool)]
+        //public static extern bool SetWaitableTimer(SafeWaitHandle hTimer, [In] ref long pDueTime, int lPeriod, IntPtr pfnCompletionRoutine, IntPtr lpArgToCompletionRoutine, bool fResume);
+
+        //[System.Runtime.InteropServices.DllImport("Kernel32.dll", EntryPoint = "SetThreadExecutionState",
+        //CharSet = System.Runtime.InteropServices.CharSet.Auto, SetLastError = true)]
+        //public extern static EXECUTION_STATE SetThreadExecutionState(EXECUTION_STATE state);
+        //[System.FlagsAttribute]
+        //public enum PowerThreadRequirements : uint
+        //{
+        //    ReleaseHold = 0x80000000,
+        //    HoldSystem = (0x00000001 | ReleaseHold),
+        //    HoldDisplay = (0x00000002 | ReleaseHold),
+        //    HoldSystemAndDisplay = (HoldSystem | HoldDisplay | ReleaseHold),
+        //}
+
+        //[System.FlagsAttribute]
+        //public enum EXECUTION_STATE : uint //!< Add by KCL, [he] found this by searching SetThreadExecutionState on offline MSDN
+        //{
+        //    /// Informs the system that the state being set should remain in effect until the next call
+        //    /// that uses ES_CONTINUOUS and one of the other state flags is cleared. ///
+        //    ES_CONTINUOUS = 0x80000000, ///
+
+        //    /// Forces the display to be on by resetting the display idle timer. ///
+        //    ES_DISPLAY_REQUIRED = 0x00000002, ///
+
+        //    /// Forces the system to be in the working state by resetting the system idle timer. ///
+        //    ES_SYSTEM_REQUIRED = 0x00000001,
+        //}
 
         public MainWindow()
         {
@@ -66,6 +108,8 @@ namespace MassEffectTimer
             timer1.Interval = new TimeSpan(0, 0, 1);
 
             DisplayText(hours,minutes,seconds);
+           // waker = new Thread(new ThreadStart(SetWaitForWakeUpTime));
+            waker = new Waker();
 
 
         }
@@ -77,6 +121,7 @@ namespace MassEffectTimer
         }
         private void btnPlay_Click(System.Object sender, System.Windows.RoutedEventArgs e)
         {
+            
 
             if (!timer1.IsEnabled)
             {
@@ -87,10 +132,17 @@ namespace MassEffectTimer
                 try
                 {
                     total_time = seconds + minutes * 60 + hours * 3600;
+                    current_rest_time = total_time;
                     progressBar1.Minimum = 1;
-                    progressBar1.Maximum = total_time;
+                    progressBar1.Maximum = progressBar1.Value+total_time;
 
-                     timer1.Start();
+                   // MessageBox.Show(total_time + " - " + progressBar1.Value);
+                    endtime = DateTime.Now.AddSeconds(current_rest_time);
+                    // MessageBox.Show(endtime.ToLongTimeString());
+                    timer1.Start();
+                    waker.SetEndtime(endtime);
+                    waker.Start();
+
 
                     DisplayText(hours, minutes, seconds);
                     
@@ -104,26 +156,37 @@ namespace MassEffectTimer
             {
 
                 timer1.Stop();
+                waker.Pause();
                 btnPlay.Tag = new BitmapImage(new Uri(@"pack://application:,,,/img/button_play9.png"));
+                btnEdit.Tag = new BitmapImage(new Uri(@"pack://application:,,,/img/button_edit2.png"));
  
             }
         }
 
+
+
         private void timer1_Tick(object sender, EventArgs e)
         {
-            if ((minutes == 0) && (seconds == 0) && (hours == 0))
+              TimeSpan rest = endtime - DateTime.Now;
+              double rest_time = rest.TotalSeconds;
+              int rest_sec = Convert.ToInt32(rest_time);
+           // if ((minutes == 0) && (seconds == 0) && (hours == 0))
+            if(rest_sec<=0)
             {
                 // If the time is over, clear all settings and fields.
                 // Also, show the message, notifying that the time is over.
                 timer1.Stop();
 
+                hours = 0;
+                minutes = 0;
+                seconds = 0;
                 dynamicPanelReady = new Window();
                 dynamicPanelReady.Background = new SolidColorBrush(Colors.Transparent);
                 dynamicPanelReady.Width = 540;
 
                 dynamicPanelReady.Height = 125;
                 dynamicPanelReady.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-               
+
                 dynamicPanelReady.AllowsTransparency = true;
                 dynamicPanelReady.WindowStyle = WindowStyle.None;
 
@@ -135,10 +198,15 @@ namespace MassEffectTimer
                 readyButton.Tag = new BitmapImage(new Uri(@"pack://application:,,,/img/completed1.png", UriKind.RelativeOrAbsolute));
                 readyButton.Click += new RoutedEventHandler(readyButton_Click);
                 dynamicPanelReady.Content = readyButton;
+
+                DisplayText(hours, minutes, seconds);
                 dynamicPanelReady.Show();
 
-
                
+                
+
+
+
                 Assembly assembly = Assembly.GetExecutingAssembly();
                 player = new SoundPlayer(assembly.GetManifestResourceStream("MassEffectTimer.upload_completed_wav.wav"));
                 player.PlaySync();
@@ -146,41 +214,75 @@ namespace MassEffectTimer
                 player.PlaySync();
                 player = new SoundPlayer(Assembly.GetExecutingAssembly().GetManifestResourceStream("MassEffectTimer.biosnd_end001.wav"));
                 player.PlayLooping();
-   
+
+                //DisplayText(hours, minutes, seconds);
+                progressBar1.Value = total_time;
 
 
-                
+
+
             }
             else
             {
+
+                int diff = current_rest_time - rest_sec;
+
+
+                hours = Convert.ToInt32(Math.Floor(rest_sec / 3600.00));
+                minutes = Convert.ToInt32(Math.Floor((rest_sec - hours * 3600) / 60.00));
+                seconds = Convert.ToInt32(rest_sec - minutes * 60 - hours * 3600);
+
+                
+
+                //if (rest_sec < 60) 
+                //{
+
+                //    seconds = rest_sec;
+                //    minutes = 0;
+                //    hours = 0;
+                //}
+                //else if (rest_sec < 3600)
+                //{
+                //    minutes = Convert.ToInt32(Math.Floor(rest_sec / 60.00));
+                //    seconds = Convert.ToInt32(rest_sec - minutes * 60);
+                //    hours = 0;
+
+                //}
+                //else
+                //{
+                //    hours = Convert.ToInt32(Math.Floor(rest_sec / 3600.00));
+                //    minutes = Convert.ToInt32(Math.Floor((rest_sec - hours * 60)/60.00));
+                //    seconds = Convert.ToInt32(rest_sec - minutes * 60-hours*3600);
+                //}
                 // Else continue counting.
-                if (seconds < 1)
-                {
-                    seconds = 59;
-                    if (minutes == 0)
-                    {
-                        minutes = 59;
-                        if (hours != 0)
-                        {
-                            hours -= 1;
-                        }
+                //if (seconds < 1)
+                //{
+                //    seconds = 59;
+                //    if (minutes == 0)
+                //    {
+                //        minutes = 59;
+                //        if (hours != 0)
+                //        {
+                //            hours -= 1;
+                //        }
 
-                    }
-                    else
-                    {
-                        minutes -= 1;
-                    }
-                }
-                else
-                {
-                    seconds -= 1;
-                }
+                //    }
+                //    else
+                //    {
+                //        minutes -= 1;
+                //    }
+                //}
+                //else
+                //{
+                //    seconds -= 1;
+                //}
 
 
- 
-                progressBar1.Value += 1;
+
+                progressBar1.Value += diff;
                 DisplayText(hours, minutes, seconds);
- 
+                current_rest_time = Convert.ToInt32(rest_time);
+
             }
         }
 
@@ -195,6 +297,7 @@ namespace MassEffectTimer
         private void btnEdit_Click(object sender, EventArgs e)
         {
             if (!timer1.IsEnabled)
+
             {
 
                 btnPlay.Tag = new BitmapImage(new Uri(@"pack://application:,,,/img/button_play9_disabled.png"));
@@ -316,6 +419,8 @@ namespace MassEffectTimer
             PathGeometry pathGeometry = geometry.GetFlattenedPathGeometry();
 
             // Supply the empty Path element in XAML with the PathGeometry in order to render the polygons.
+
+ 
             path.Data = pathGeometry;
 
         }
@@ -364,6 +469,7 @@ namespace MassEffectTimer
                 print_hours = false;
             }
             DisplayText(hours, minutes, seconds);
+            progressBar1.Value = 1;
             btnPlay.Tag = new BitmapImage(new Uri(@"pack://application:,,,/img/button_play9.png"));
 
         }
@@ -384,11 +490,45 @@ namespace MassEffectTimer
             progressBar1.Maximum = total_time;
             progressBar1.Value = 0;
             timer1.Stop();
+
             btnPlay.Tag = new BitmapImage(new Uri(@"pack://application:,,,/img/button_play9.png"));
             btnEdit.Tag = new BitmapImage(new Uri(@"pack://application:,,,/img/button_edit2.png"));
             player.Stop();
             
 
-        }      
+        }  
+    
+       //private void SetWaitForWakeUpTime()
+       // {
+       //     //DateTime utc = DateTime.Now.AddMinutes(1);
+       //     long duetime = endtime.ToFileTime();
+
+       //     using (SafeWaitHandle handle = CreateWaitableTimer(IntPtr.Zero, true, "MyWaitabletimer"))
+       //     {
+       //         if (SetWaitableTimer(handle, ref duetime, 0, IntPtr.Zero, IntPtr.Zero, true))
+       //         {
+       //             using (EventWaitHandle wh = new EventWaitHandle(false, EventResetMode.AutoReset))
+       //             {
+       //                 wh.SafeWaitHandle = handle;
+       //                 wh.WaitOne();
+       //                 SetThreadExecutionState(EXECUTION_STATE.ES_DISPLAY_REQUIRED); //| EXECUTION_STATE.ES_CONTINUOUS | EXECUTION_STATE.ES_SYSTEM_REQUIRED);
+                       
+
+       //                 //Then when you don't need the monitor anymore   
+       //                 //Allow monitor to power down   
+       //                // SetThreadExecutionState(EXECUTION_STATE.ES_CONTINUOUS);
+       //             }
+       //         }
+       //         else
+       //         {
+       //             throw new Win32Exception(Marshal.GetLastWin32Error());
+       //         }
+       //     }
+
+       //     // You could make it a recursive call here, setting it to 1 hours time or similar
+       //     //Console.WriteLine("Wake up call");
+       //     //Console.ReadLine();
+       // }
     }
-}
+
+    }
