@@ -59,12 +59,15 @@ namespace MassEffectTimer.Properties {
             }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("Mass Effect Font")]
         public string FontFamilyName {
             get {
                 return ((string)(this["FontFamilyName"]));
+            }
+            set {
+                this["FontFamilyName"] = value;
             }
         }
     }

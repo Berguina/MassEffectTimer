@@ -119,6 +119,12 @@
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Resource Include="img\close_o.png" />
+    <Resource Include="img\close.png" />
+    <Resource Include="img\ok.png" />
+    <Resource Include="img\messageBox_IB2.png" />
+    <Resource Include="img\alliance_ico_16.png" />
+    <Resource Include="img\Icon_N7_16.png" />
     <Resource Include="img\ico_png_32.png" />
     <Resource Include="ico.ico" />
     <Resource Include="img\completed1.png" />

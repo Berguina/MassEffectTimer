@@ -27,14 +27,13 @@ using System.ComponentModel;
 
 
 
-
 namespace MassEffectTimer
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     /// 
-        
+
 
     public partial class MainWindow : Window
     {
@@ -43,9 +42,9 @@ namespace MassEffectTimer
         public int hours;
         public bool print_hours = false;
         public DispatcherTimer timer1;
-       
-        public  DateTime endtime;
-       // public Thread waker;
+
+        public DateTime endtime;
+        // public Thread waker;
         public Waker waker;
         public int total_time;
         public int current_rest_time;
@@ -55,49 +54,20 @@ namespace MassEffectTimer
         public Button confirmButton;
         public Window dynamicPanelReady;
         public SoundPlayer player;
-        public SoundPlayer player1 ;
+        public SoundPlayer player1;
+        public Window AboutWindow;
+        public Window SettingsWindow;
 
-        //[DllImport("kernel32.dll")]
-        //public static extern SafeWaitHandle CreateWaitableTimer(IntPtr lpTimerAttributes, bool bManualReset, string lpTimerName);
 
-        //[DllImport("kernel32.dll", SetLastError = true)]
-        //[return: MarshalAs(UnmanagedType.Bool)]
-        //public static extern bool SetWaitableTimer(SafeWaitHandle hTimer, [In] ref long pDueTime, int lPeriod, IntPtr pfnCompletionRoutine, IntPtr lpArgToCompletionRoutine, bool fResume);
-
-        //[System.Runtime.InteropServices.DllImport("Kernel32.dll", EntryPoint = "SetThreadExecutionState",
-        //CharSet = System.Runtime.InteropServices.CharSet.Auto, SetLastError = true)]
-        //public extern static EXECUTION_STATE SetThreadExecutionState(EXECUTION_STATE state);
-        //[System.FlagsAttribute]
-        //public enum PowerThreadRequirements : uint
-        //{
-        //    ReleaseHold = 0x80000000,
-        //    HoldSystem = (0x00000001 | ReleaseHold),
-        //    HoldDisplay = (0x00000002 | ReleaseHold),
-        //    HoldSystemAndDisplay = (HoldSystem | HoldDisplay | ReleaseHold),
-        //}
-
-        //[System.FlagsAttribute]
-        //public enum EXECUTION_STATE : uint //!< Add by KCL, [he] found this by searching SetThreadExecutionState on offline MSDN
-        //{
-        //    /// Informs the system that the state being set should remain in effect until the next call
-        //    /// that uses ES_CONTINUOUS and one of the other state flags is cleared. ///
-        //    ES_CONTINUOUS = 0x80000000, ///
-
-        //    /// Forces the display to be on by resetting the display idle timer. ///
-        //    ES_DISPLAY_REQUIRED = 0x00000002, ///
-
-        //    /// Forces the system to be in the working state by resetting the system idle timer. ///
-        //    ES_SYSTEM_REQUIRED = 0x00000001,
-        //}
 
         public MainWindow()
         {
             InitializeComponent();
-            
+
             hours = Properties.Settings.Default.SavedHours;
             minutes = Properties.Settings.Default.SavedMinutes;
             seconds = Properties.Settings.Default.SavedSeconds;
-           
+
             if (hours > 0)
             {
                 print_hours = true;
@@ -107,21 +77,25 @@ namespace MassEffectTimer
             timer1.Tick += new EventHandler(timer1_Tick);
             timer1.Interval = new TimeSpan(0, 0, 1);
 
-            DisplayText(hours,minutes,seconds);
-           // waker = new Thread(new ThreadStart(SetWaitForWakeUpTime));
+            DisplayText(hours, minutes, seconds);
+            // waker = new Thread(new ThreadStart(SetWaitForWakeUpTime));
             waker = new Waker();
+
 
 
         }
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            this.DragMove();
+            if (e.ChangedButton == MouseButton.Left)
+            {
+                this.DragMove();
+            }
 
         }
         private void btnPlay_Click(System.Object sender, System.Windows.RoutedEventArgs e)
         {
-            
+
 
             if (!timer1.IsEnabled)
             {
@@ -134,9 +108,9 @@ namespace MassEffectTimer
                     total_time = seconds + minutes * 60 + hours * 3600;
                     current_rest_time = total_time;
                     progressBar1.Minimum = 1;
-                    progressBar1.Maximum = progressBar1.Value+total_time;
+                    progressBar1.Maximum = progressBar1.Value + total_time;
 
-                   // MessageBox.Show(total_time + " - " + progressBar1.Value);
+                    // MessageBox.Show(total_time + " - " + progressBar1.Value);
                     endtime = DateTime.Now.AddSeconds(current_rest_time);
                     // MessageBox.Show(endtime.ToLongTimeString());
                     timer1.Start();
@@ -145,7 +119,7 @@ namespace MassEffectTimer
 
 
                     DisplayText(hours, minutes, seconds);
-                    
+
                 }
                 catch (Exception ex)
                 {
@@ -159,7 +133,7 @@ namespace MassEffectTimer
                 waker.Pause();
                 btnPlay.Tag = new BitmapImage(new Uri(@"pack://application:,,,/img/button_play9.png"));
                 btnEdit.Tag = new BitmapImage(new Uri(@"pack://application:,,,/img/button_edit2.png"));
- 
+
             }
         }
 
@@ -167,11 +141,11 @@ namespace MassEffectTimer
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-              TimeSpan rest = endtime - DateTime.Now;
-              double rest_time = rest.TotalSeconds;
-              int rest_sec = Convert.ToInt32(rest_time);
-           // if ((minutes == 0) && (seconds == 0) && (hours == 0))
-            if(rest_sec<=0)
+            TimeSpan rest = endtime - DateTime.Now;
+            double rest_time = rest.TotalSeconds;
+            int rest_sec = Convert.ToInt32(rest_time);
+            // if ((minutes == 0) && (seconds == 0) && (hours == 0))
+            if (rest_sec <= 0)
             {
                 // If the time is over, clear all settings and fields.
                 // Also, show the message, notifying that the time is over.
@@ -202,8 +176,8 @@ namespace MassEffectTimer
                 DisplayText(hours, minutes, seconds);
                 dynamicPanelReady.Show();
 
-               
-                
+
+
 
 
 
@@ -232,7 +206,7 @@ namespace MassEffectTimer
                 minutes = Convert.ToInt32(Math.Floor((rest_sec - hours * 3600) / 60.00));
                 seconds = Convert.ToInt32(rest_sec - minutes * 60 - hours * 3600);
 
-                
+
 
                 //if (rest_sec < 60) 
                 //{
@@ -297,7 +271,6 @@ namespace MassEffectTimer
         private void btnEdit_Click(object sender, EventArgs e)
         {
             if (!timer1.IsEnabled)
-
             {
 
                 btnPlay.Tag = new BitmapImage(new Uri(@"pack://application:,,,/img/button_play9_disabled.png"));
@@ -314,7 +287,7 @@ namespace MassEffectTimer
                 textBox1.FontSize = 24;
                 textBox1.FontStyle = System.Windows.FontStyles.Normal;
 
-                Canvas.SetLeft(textBox1,53.00);
+                Canvas.SetLeft(textBox1, 53.00);
                 Canvas.SetTop(textBox1, 95.00);
 
                 textBox2 = new TextBox();
@@ -338,7 +311,7 @@ namespace MassEffectTimer
                 Canvas.SetTop(textBox2, 95.00);
                 Canvas.SetLeft(textBox3, 200.00);
                 Canvas.SetTop(textBox3, 95.00);
- 
+
 
                 confirmButton = new Button();
                 confirmButton.Width = 159;
@@ -352,25 +325,25 @@ namespace MassEffectTimer
                 this.confirmButton.MouseEnter += new MouseEventHandler(confirmButton_MouseEnter);
                 this.confirmButton.MouseLeave += new MouseEventHandler(confirmButton_MouseLeave);
                 this.confirmButton.Click += new RoutedEventHandler(confirmButton_Click);
-                
 
-               
+
+
 
                 Canvas.SetLeft(confirmButton, 50.0);
                 Canvas.SetTop(confirmButton, 178.0);
 
- 
+
                 this.dynamicPanel.Children.Add(textBox1);
                 this.dynamicPanel.Children.Add(textBox2);
                 this.dynamicPanel.Children.Add(textBox3);
                 this.dynamicPanel.Children.Add(confirmButton);
 
-   
+
             }
 
         }
 
-        public void DisplayText(int hours,int minutes, int seconds)
+        public void DisplayText(int hours, int minutes, int seconds)
         {
             String textToDisplay = "";
             if (print_hours)
@@ -379,13 +352,13 @@ namespace MassEffectTimer
                 {
                     textToDisplay += "0";
                 }
-                textToDisplay += hours.ToString()+":";
+                textToDisplay += hours.ToString() + ":";
                 if (minutes < 10)
                 {
                     textToDisplay += "0";
                 }
             }
-            textToDisplay += minutes.ToString()+":";
+            textToDisplay += minutes.ToString() + ":";
             if (seconds < 10)
             {
 
@@ -412,7 +385,7 @@ namespace MassEffectTimer
             }
             else
             {
-                geometry = formattedText.BuildGeometry(new System.Windows.Point(180,10));
+                geometry = formattedText.BuildGeometry(new System.Windows.Point(180, 10));
             }
 
             // Create a set of polygons by flattening the Geometry object.
@@ -420,7 +393,7 @@ namespace MassEffectTimer
 
             // Supply the empty Path element in XAML with the PathGeometry in order to render the polygons.
 
- 
+
             path.Data = pathGeometry;
 
         }
@@ -428,16 +401,16 @@ namespace MassEffectTimer
         private void confirmButton_MouseLeave(object sender, EventArgs e)
         {
 
-            confirmButton.Tag = new BitmapImage(new Uri(@"pack://application:,,,/img/confirm1.png", UriKind.RelativeOrAbsolute)); 
-            
+            confirmButton.Tag = new BitmapImage(new Uri(@"pack://application:,,,/img/confirm1.png", UriKind.RelativeOrAbsolute));
+
         }
 
 
         private void confirmButton_MouseEnter(object sender, EventArgs e)
         {
 
-            confirmButton.Tag = new BitmapImage(new Uri(@"pack://application:,,,/img/confirm1b.png", UriKind.RelativeOrAbsolute)); 
-      
+            confirmButton.Tag = new BitmapImage(new Uri(@"pack://application:,,,/img/confirm1b.png", UriKind.RelativeOrAbsolute));
+
         }
 
         private void confirmButton_Click(object sender, EventArgs e)
@@ -494,41 +467,343 @@ namespace MassEffectTimer
             btnPlay.Tag = new BitmapImage(new Uri(@"pack://application:,,,/img/button_play9.png"));
             btnEdit.Tag = new BitmapImage(new Uri(@"pack://application:,,,/img/button_edit2.png"));
             player.Stop();
+
+
+        }
+
+        private void About_Click(object sender, EventArgs e)
+        {
+            AboutWindow = new Window();
+            AboutWindow.Background = new ImageBrush(new BitmapImage(new Uri(@"pack://application:,,,/img/messageBox_IB2.png")));
+            AboutWindow.Width = 512;
+
+            AboutWindow.Height = 512;
+            AboutWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+
+            AboutWindow.AllowsTransparency = true;
+            AboutWindow.WindowStyle = WindowStyle.None;
+
+
+            Canvas panel = new Canvas();
+            panel.Width = 400;
+            panel.Height = 500;
+            panel.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            Canvas.SetTop(panel, 0.00);
+
+            TextBlock aboutBox = new TextBlock();
+            aboutBox.Width = 400;
+            aboutBox.Height = 400;
+            aboutBox.TextWrapping = TextWrapping.WrapWithOverflow;
+            aboutBox.Background = new SolidColorBrush(Colors.Transparent);
+            aboutBox.Foreground = new SolidColorBrush(Colors.White);
+            aboutBox.FontFamily = new System.Windows.Media.FontFamily("Arial");
+            aboutBox.FontSize = 16;
+            aboutBox.FontStyle = System.Windows.FontStyles.Normal;
+            aboutBox.Text = " About ";
+
+            Canvas.SetTop(aboutBox, 95.0);
+            panel.Children.Add(aboutBox);
+
+            Button closeButton = new Button();
+            closeButton.Width = 182;
+            closeButton.Height = 33;
+            closeButton.Style = (Style)FindResource("MEButtonStyle_2");
+
+            closeButton.Tag = new BitmapImage(new Uri(@"pack://application:,,,/img/close.png", UriKind.RelativeOrAbsolute)); ;
+
+            closeButton.BorderBrush = new SolidColorBrush(Colors.Transparent);
+            closeButton.BorderThickness = new System.Windows.Thickness(0);
+            closeButton.MouseEnter += new MouseEventHandler(closeButton_MouseEnter);
+            closeButton.MouseLeave += new MouseEventHandler(closeButton_MouseLeave);
+            closeButton.Click += new RoutedEventHandler(closeButton_Click);
+
+
+
+
+            Canvas.SetLeft(closeButton, 220.0);
+            Canvas.SetTop(closeButton, 400.0);
+            panel.Children.Add(closeButton);
+
+            AboutWindow.Content = panel;
+
+
+            AboutWindow.Show();
+
+
+
+        }
+        private void closeButton_MouseLeave(object sender, EventArgs e)
+        {
+            // MessageBox.Show(sender.ToString());
+            var ele = sender as ContentControl;
+            ele.Tag = new BitmapImage(new Uri(@"pack://application:,,,/img/close.png", UriKind.RelativeOrAbsolute));
+
+        }
+
+
+        private void closeButton_MouseEnter(object sender, EventArgs e)
+        {
+            var ele = sender as ContentControl;
+            ele.Tag = new BitmapImage(new Uri(@"pack://application:,,,/img/close_o.png", UriKind.RelativeOrAbsolute));
+
+        }
+
+        private void closeButton_Click(object sender, EventArgs e)
+        {
+
+            var ele = sender as ContentControl;
+            var panel = ele.Parent as ContentControl;
+            this.AboutWindow.Hide();
+
+
+        }
+
+
+        private void Settings_Click(object sender, EventArgs e)
+        {
+            SettingsWindow = new Window();
+            SettingsWindow.Background = new ImageBrush(new BitmapImage(new Uri(@"pack://application:,,,/img/messageBox_IB2.png")));
+            SettingsWindow.Width = 512;
+
+            SettingsWindow.Height = 512;
+            SettingsWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+
+            SettingsWindow.AllowsTransparency = true;
+            SettingsWindow.WindowStyle = WindowStyle.None;
+
+
+            Canvas panel = new Canvas();
+            panel.Width = 400;
+            panel.Height = 500;
+            panel.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            Canvas.SetTop(panel, 0.00);
+
+            Label settingsBox = new Label();
+            settingsBox.Content = " General Settings ";
+
+            settingsBox.Width = 400;
+            settingsBox.Height = 100;
+            settingsBox.Background = new SolidColorBrush(Colors.Transparent);
+            settingsBox.Foreground = new SolidColorBrush(Colors.White);
+            settingsBox.FontFamily = new System.Windows.Media.FontFamily("Arial");
+            settingsBox.FontSize = 24;
+            settingsBox.FontStyle = System.Windows.FontStyles.Normal;
+            Canvas.SetTop(settingsBox, 85.00);
+
+            panel.Children.Add(settingsBox);
+
+            TextBlock settingsExp = new TextBlock();
+            settingsExp.Width = 400;
+            settingsExp.Height = 100;
+            settingsExp.TextWrapping = TextWrapping.WrapWithOverflow;
+            settingsExp.Background = new SolidColorBrush(Colors.Transparent);
+            settingsExp.Foreground = new SolidColorBrush(Colors.White);
+            settingsExp.FontFamily = new System.Windows.Media.FontFamily("Arial");
+            settingsExp.FontSize = 12;
+            settingsExp.FontStyle = System.Windows.FontStyles.Normal;
+            settingsExp.Text = "  Set fonts for your timer.\n  You can download Mass Effect fonts from the Web for a better result";
+            Canvas.SetTop(settingsExp, 135.00);
+
+            panel.Children.Add(settingsExp);
+            Label fontLabel = new Label();
+            fontLabel.Content = " Fonts ";
+
+            fontLabel.Width = 400;
+            fontLabel.Height = 100;
+            fontLabel.Background = new SolidColorBrush(Colors.Transparent);
+            fontLabel.Foreground = new SolidColorBrush(Colors.White);
+            fontLabel.FontFamily = new System.Windows.Media.FontFamily("Arial");
+            fontLabel.FontSize = 16;
+            fontLabel.FontStyle = System.Windows.FontStyles.Normal;
+            Canvas.SetTop(fontLabel, 175.00);
+
+            panel.Children.Add(fontLabel);
+
+            ComboBox fontList = new ComboBox();
+            fontList.Name = "fontList";
+            fontList.Width = 200;
+            // fontList.ItemsSource = Fonts.SystemFontFamilies;
+            fontList.IsDropDownOpen = false;
+
+            foreach (FontFamily font in Fonts.SystemFontFamilies)
+            {
+
+                ComboBoxItem comboBoxItem = new ComboBoxItem();
+                comboBoxItem.Content = font.ToString();
+                comboBoxItem.Tag = font;
+                fontList.Items.Add(comboBoxItem);
+                if (font.ToString() == Properties.Settings.Default.FontFamilyName)
+                {
+                    fontList.SelectedItem = comboBoxItem;
+                }
+            }
+            //fontList.SelectedIndex =fontList.Items.IndexOf(Properties.Settings.Default.FontFamilyName);
+            //fontList.SelectedIndex = fontList.Items.IndexOf(Properties.Settings.Default.FontFamilyName);
+            // MessageBox.Show(fontList.SelectedIndex.ToString());
+            Canvas.SetLeft(fontList, 100.0);
+            Canvas.SetTop(fontList, 175.00);
+
+            panel.Children.Add(fontList);
+
+
+            TextBlock timerExp = new TextBlock();
+            timerExp.Width = 400;
+            timerExp.Height = 100;
+            timerExp.TextWrapping = TextWrapping.WrapWithOverflow;
+            timerExp.Background = new SolidColorBrush(Colors.Transparent);
+            timerExp.Foreground = new SolidColorBrush(Colors.White);
+            timerExp.FontFamily = new System.Windows.Media.FontFamily("Arial");
+            timerExp.FontSize = 12;
+            timerExp.FontStyle = System.Windows.FontStyles.Normal;
+            timerExp.Text = "  Set the duration of your timer.\n  You can set it also pressing the button E next to play in the interface";
+            Canvas.SetTop(timerExp, 225.00);
+
+            panel.Children.Add(timerExp);
+
+            Label timerLabel = new Label();
+            timerLabel.Content = " Timer ";
+
+            timerLabel.Width = 400;
+            timerLabel.Height = 100;
+            timerLabel.Background = new SolidColorBrush(Colors.Transparent);
+            timerLabel.Foreground = new SolidColorBrush(Colors.White);
+            timerLabel.FontFamily = new System.Windows.Media.FontFamily("Arial");
+            timerLabel.FontSize = 16;
+            timerLabel.FontStyle = System.Windows.FontStyles.Normal;
+            Canvas.SetTop(timerLabel, 265.00);
+
+            panel.Children.Add(timerLabel);
+
+            TextBox textBox1 = new TextBox();
+            textBox1.Name = "sh";
+            textBox1.Text = Properties.Settings.Default.SavedHours.ToString();
+            textBox1.Width = 70;
+            textBox1.Height = 35;
+            textBox1.Background = new SolidColorBrush(Colors.LightGray);
+            textBox1.FontFamily = new System.Windows.Media.FontFamily("Arial");
+            textBox1.FontSize = 24;
+            textBox1.FontStyle = System.Windows.FontStyles.Normal;
+
+            Canvas.SetLeft(textBox1, 100.00);
+            Canvas.SetTop(textBox1, 265.00);
+
+            TextBox textBox2 = new TextBox();
+            textBox2.Name = "sm";
+            textBox2.Text = Properties.Settings.Default.SavedMinutes.ToString();
+            textBox2.Width = 70;
+            textBox2.Height = 35;
+            textBox2.Background = new SolidColorBrush(Colors.LightGray);
+            textBox2.FontFamily = new System.Windows.Media.FontFamily("Arial");
+            textBox2.FontSize = 24;
+            textBox2.FontStyle = System.Windows.FontStyles.Normal;
+            TextBox textBox3 = new TextBox();
+            textBox3.Name = "ss";
+            textBox3.Text = Properties.Settings.Default.SavedSeconds.ToString();
+            textBox3.Width = 70;
+            textBox3.Height = 35;
+            textBox3.Background = new SolidColorBrush(Colors.LightGray);
+            textBox3.FontFamily = new System.Windows.Media.FontFamily("Arial");
+            textBox3.FontSize = 24;
+            textBox3.FontStyle = System.Windows.FontStyles.Normal;
+
+            Canvas.SetLeft(textBox2, 173.00);
+            Canvas.SetTop(textBox2, 265.00);
+            Canvas.SetLeft(textBox3, 247.00);
+            Canvas.SetTop(textBox3, 265.00);
+
+            panel.Children.Add(textBox1);
+            panel.Children.Add(textBox2);
+            panel.Children.Add(textBox3);
+
+            Button okButton = new Button();
+            okButton.Width = 182;
+            okButton.Height = 33;
+            okButton.Style = (Style)FindResource("MEButtonStyle_2");
+
+            okButton.Tag = new BitmapImage(new Uri(@"pack://application:,,,/img/ok.png", UriKind.RelativeOrAbsolute)); ;
+
+            okButton.BorderBrush = new SolidColorBrush(Colors.Transparent);
+            okButton.BorderThickness = new System.Windows.Thickness(0);
+            // okButton.MouseEnter += new MouseEventHandler(closeButton_MouseEnter);
+            // okButton.MouseLeave += new MouseEventHandler(closeButton_MouseLeave);
+            okButton.Click += new RoutedEventHandler(okButton_Click);
+
+
+
+
+            Canvas.SetLeft(okButton, 220.0);
+            Canvas.SetTop(okButton, 400.0);
+            panel.Children.Add(okButton);
+
+            SettingsWindow.Content = panel;
+
+
+            SettingsWindow.Show();
+
+
+
+        }
+
+        private void okButton_Click(object sender, EventArgs e)
+        {
+
+            var ele = sender as ContentControl;
+            var panel = ele.Parent as Panel;
+
+            for (var i = 0; i < panel.Children.Count; i++) {
+                var c=panel.Children[i];
+                if (c is System.Windows.Controls.ComboBox) {
+
+                    var fontList = c as ComboBox;
+                    var selectedFont = fontList.SelectedItem.ToString().Substring(38);
+                    
+                    Properties.Settings.Default.FontFamilyName = selectedFont;
+                    Properties.Settings.Default.Save();
+
+                }
+                if (c is System.Windows.Controls.TextBox) {
+                    var val = c as TextBox;
+                    if (val.Name == "sh") {
+                        Properties.Settings.Default.SavedHours = System.Convert.ToInt32(val.Text);
+
+                    }
+                    else if (val.Name == "sm") {
+                        Properties.Settings.Default.SavedMinutes = System.Convert.ToInt32(val.Text);
+                    }else if(val.Name=="ss"){
+
+                        Properties.Settings.Default.SavedSeconds = System.Convert.ToInt32(val.Text);
+                    }
+                }
+                //MessageBox.Show(panel.Children[i].GetType().ToString());
+            }
+
+            Properties.Settings.Default.Save();
             
 
-        }  
-    
-       //private void SetWaitForWakeUpTime()
-       // {
-       //     //DateTime utc = DateTime.Now.AddMinutes(1);
-       //     long duetime = endtime.ToFileTime();
+            hours = Properties.Settings.Default.SavedHours;
+            minutes = Properties.Settings.Default.SavedMinutes;
+            seconds = Properties.Settings.Default.SavedSeconds;
 
-       //     using (SafeWaitHandle handle = CreateWaitableTimer(IntPtr.Zero, true, "MyWaitabletimer"))
-       //     {
-       //         if (SetWaitableTimer(handle, ref duetime, 0, IntPtr.Zero, IntPtr.Zero, true))
-       //         {
-       //             using (EventWaitHandle wh = new EventWaitHandle(false, EventResetMode.AutoReset))
-       //             {
-       //                 wh.SafeWaitHandle = handle;
-       //                 wh.WaitOne();
-       //                 SetThreadExecutionState(EXECUTION_STATE.ES_DISPLAY_REQUIRED); //| EXECUTION_STATE.ES_CONTINUOUS | EXECUTION_STATE.ES_SYSTEM_REQUIRED);
-                       
+            
 
-       //                 //Then when you don't need the monitor anymore   
-       //                 //Allow monitor to power down   
-       //                // SetThreadExecutionState(EXECUTION_STATE.ES_CONTINUOUS);
-       //             }
-       //         }
-       //         else
-       //         {
-       //             throw new Win32Exception(Marshal.GetLastWin32Error());
-       //         }
-       //     }
+            if (hours > 0)
+            {
+                print_hours = true;
+            }
+            else
+            {
+                print_hours = false;
+            }
+            DisplayText(hours, minutes, seconds);
+            total_time = seconds + minutes * 60 + hours * 3600;
+            progressBar1.Minimum = 0;
+            progressBar1.Maximum = total_time;
+            progressBar1.Value = 0; 
+            btnPlay.Tag = new BitmapImage(new Uri(@"pack://application:,,,/img/button_play9.png"));
 
-       //     // You could make it a recursive call here, setting it to 1 hours time or similar
-       //     //Console.WriteLine("Wake up call");
-       //     //Console.ReadLine();
-       // }
+            SettingsWindow.Hide();
+            
+
+        }
     }
-
     }

@@ -11,7 +11,7 @@
     <Setting Name="SavedSeconds" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">30</Value>
     </Setting>
-    <Setting Name="FontFamilyName" Type="System.String" Scope="Application">
+    <Setting Name="FontFamilyName" Type="System.String" Scope="User">
       <Value Profile="(Default)">Mass Effect Font</Value>
     </Setting>
   </Settings>

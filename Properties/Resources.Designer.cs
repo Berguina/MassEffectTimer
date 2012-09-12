@@ -60,6 +60,13 @@ namespace MassEffectTimer.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap alliance_ico_16 {
+            get {
+                object obj = ResourceManager.GetObject("alliance_ico_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap background6 {
             get {
                 object obj = ResourceManager.GetObject("background6", resourceCulture);
@@ -109,6 +116,20 @@ namespace MassEffectTimer.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap close {
+            get {
+                object obj = ResourceManager.GetObject("close", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap close_o {
+            get {
+                object obj = ResourceManager.GetObject("close_o", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap completed1 {
             get {
                 object obj = ResourceManager.GetObject("completed1", resourceCulture);
@@ -133,6 +154,27 @@ namespace MassEffectTimer.Properties {
         internal static System.Drawing.Bitmap ico_png_32 {
             get {
                 object obj = ResourceManager.GetObject("ico_png_32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap Icon_N7_16 {
+            get {
+                object obj = ResourceManager.GetObject("Icon_N7_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap messageBox_IB2 {
+            get {
+                object obj = ResourceManager.GetObject("messageBox_IB2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap ok {
+            get {
+                object obj = ResourceManager.GetObject("ok", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
