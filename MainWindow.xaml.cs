@@ -103,6 +103,7 @@ namespace MassEffectTimer
 
                 btnPlay.Tag = new BitmapImage(new Uri(@"pack://application:,,,/img/button_pause.png"));
                 btnEdit.Tag = new BitmapImage(new Uri(@"pack://application:,,,/img/button_edit2_disabled.png"));
+                this.Settings.IsEnabled = false;
                 try
                 {
                     total_time = seconds + minutes * 60 + hours * 3600;
@@ -133,6 +134,7 @@ namespace MassEffectTimer
                 waker.Pause();
                 btnPlay.Tag = new BitmapImage(new Uri(@"pack://application:,,,/img/button_play9.png"));
                 btnEdit.Tag = new BitmapImage(new Uri(@"pack://application:,,,/img/button_edit2.png"));
+                this.Settings.IsEnabled = true;
 
             }
         }
@@ -490,6 +492,21 @@ namespace MassEffectTimer
             panel.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             Canvas.SetTop(panel, 0.00);
 
+
+            Label aboutLabel = new Label();
+            aboutLabel.Content = " About ";
+
+            aboutLabel.Width = 400;
+            aboutLabel.Height = 100;
+            aboutLabel.Background = new SolidColorBrush(Colors.Transparent);
+            aboutLabel.Foreground = new SolidColorBrush(Colors.White);
+            aboutLabel.FontFamily = new System.Windows.Media.FontFamily("Arial");
+            aboutLabel.FontSize = 24;
+            aboutLabel.FontStyle = System.Windows.FontStyles.Normal;
+            Canvas.SetTop(aboutLabel, 85.00);
+
+            panel.Children.Add(aboutLabel);
+
             TextBlock aboutBox = new TextBlock();
             aboutBox.Width = 400;
             aboutBox.Height = 400;
@@ -499,9 +516,9 @@ namespace MassEffectTimer
             aboutBox.FontFamily = new System.Windows.Media.FontFamily("Arial");
             aboutBox.FontSize = 16;
             aboutBox.FontStyle = System.Windows.FontStyles.Normal;
-            aboutBox.Text = " About ";
+            aboutBox.Text = " Mass Effect Themed Tea-Timer \n developed by Anna Putrino. \n\nThe code is open source, you can download it at  https://github.com/Berguina/MassEffectTimer \n\nThe copyright of images and sounds belongs to Bioware/EA. \n\n\nI've developed this timer for fun inspiring myself to my prefered game. \nEnjoy! ";
 
-            Canvas.SetTop(aboutBox, 95.0);
+            Canvas.SetTop(aboutBox, 125.0);
             panel.Children.Add(aboutBox);
 
             Button closeButton = new Button();
@@ -561,185 +578,189 @@ namespace MassEffectTimer
 
         private void Settings_Click(object sender, EventArgs e)
         {
-            SettingsWindow = new Window();
-            SettingsWindow.Background = new ImageBrush(new BitmapImage(new Uri(@"pack://application:,,,/img/messageBox_IB2.png")));
-            SettingsWindow.Width = 512;
-
-            SettingsWindow.Height = 512;
-            SettingsWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-
-            SettingsWindow.AllowsTransparency = true;
-            SettingsWindow.WindowStyle = WindowStyle.None;
-
-
-            Canvas panel = new Canvas();
-            panel.Width = 400;
-            panel.Height = 500;
-            panel.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-            Canvas.SetTop(panel, 0.00);
-
-            Label settingsBox = new Label();
-            settingsBox.Content = " General Settings ";
-
-            settingsBox.Width = 400;
-            settingsBox.Height = 100;
-            settingsBox.Background = new SolidColorBrush(Colors.Transparent);
-            settingsBox.Foreground = new SolidColorBrush(Colors.White);
-            settingsBox.FontFamily = new System.Windows.Media.FontFamily("Arial");
-            settingsBox.FontSize = 24;
-            settingsBox.FontStyle = System.Windows.FontStyles.Normal;
-            Canvas.SetTop(settingsBox, 85.00);
-
-            panel.Children.Add(settingsBox);
-
-            TextBlock settingsExp = new TextBlock();
-            settingsExp.Width = 400;
-            settingsExp.Height = 100;
-            settingsExp.TextWrapping = TextWrapping.WrapWithOverflow;
-            settingsExp.Background = new SolidColorBrush(Colors.Transparent);
-            settingsExp.Foreground = new SolidColorBrush(Colors.White);
-            settingsExp.FontFamily = new System.Windows.Media.FontFamily("Arial");
-            settingsExp.FontSize = 12;
-            settingsExp.FontStyle = System.Windows.FontStyles.Normal;
-            settingsExp.Text = "  Set fonts for your timer.\n  You can download Mass Effect fonts from the Web for a better result";
-            Canvas.SetTop(settingsExp, 135.00);
-
-            panel.Children.Add(settingsExp);
-            Label fontLabel = new Label();
-            fontLabel.Content = " Fonts ";
-
-            fontLabel.Width = 400;
-            fontLabel.Height = 100;
-            fontLabel.Background = new SolidColorBrush(Colors.Transparent);
-            fontLabel.Foreground = new SolidColorBrush(Colors.White);
-            fontLabel.FontFamily = new System.Windows.Media.FontFamily("Arial");
-            fontLabel.FontSize = 16;
-            fontLabel.FontStyle = System.Windows.FontStyles.Normal;
-            Canvas.SetTop(fontLabel, 175.00);
-
-            panel.Children.Add(fontLabel);
-
-            ComboBox fontList = new ComboBox();
-            fontList.Name = "fontList";
-            fontList.Width = 200;
-            // fontList.ItemsSource = Fonts.SystemFontFamilies;
-            fontList.IsDropDownOpen = false;
-
-            foreach (FontFamily font in Fonts.SystemFontFamilies)
+            if (!timer1.IsEnabled)
             {
 
-                ComboBoxItem comboBoxItem = new ComboBoxItem();
-                comboBoxItem.Content = font.ToString();
-                comboBoxItem.Tag = font;
-                fontList.Items.Add(comboBoxItem);
-                if (font.ToString() == Properties.Settings.Default.FontFamilyName)
+                btnPlay.Tag = new BitmapImage(new Uri(@"pack://application:,,,/img/button_play9_disabled.png"));
+                SettingsWindow = new Window();
+                SettingsWindow.Background = new ImageBrush(new BitmapImage(new Uri(@"pack://application:,,,/img/messageBox_IB2.png")));
+                SettingsWindow.Width = 512;
+
+                SettingsWindow.Height = 512;
+                SettingsWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+
+                SettingsWindow.AllowsTransparency = true;
+                SettingsWindow.WindowStyle = WindowStyle.None;
+
+
+                Canvas panel = new Canvas();
+                panel.Width = 400;
+                panel.Height = 500;
+                panel.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+                Canvas.SetTop(panel, 0.00);
+
+                Label settingsBox = new Label();
+                settingsBox.Content = " General Settings ";
+
+                settingsBox.Width = 400;
+                settingsBox.Height = 100;
+                settingsBox.Background = new SolidColorBrush(Colors.Transparent);
+                settingsBox.Foreground = new SolidColorBrush(Colors.White);
+                settingsBox.FontFamily = new System.Windows.Media.FontFamily("Arial");
+                settingsBox.FontSize = 24;
+                settingsBox.FontStyle = System.Windows.FontStyles.Normal;
+                Canvas.SetTop(settingsBox, 85.00);
+
+                panel.Children.Add(settingsBox);
+
+                TextBlock settingsExp = new TextBlock();
+                settingsExp.Width = 400;
+                settingsExp.Height = 100;
+                settingsExp.TextWrapping = TextWrapping.WrapWithOverflow;
+                settingsExp.Background = new SolidColorBrush(Colors.Transparent);
+                settingsExp.Foreground = new SolidColorBrush(Colors.White);
+                settingsExp.FontFamily = new System.Windows.Media.FontFamily("Arial");
+                settingsExp.FontSize = 12;
+                settingsExp.FontStyle = System.Windows.FontStyles.Normal;
+                settingsExp.Text = "  Set fonts for your timer.\n  You can download Mass Effect fonts from the Web for a better result \n (http://sta.sh/013u2wkdr1j9).";
+                Canvas.SetTop(settingsExp, 135.00);
+
+                panel.Children.Add(settingsExp);
+                Label fontLabel = new Label();
+                fontLabel.Content = " Fonts ";
+
+                fontLabel.Width = 400;
+                fontLabel.Height = 100;
+                fontLabel.Background = new SolidColorBrush(Colors.Transparent);
+                fontLabel.Foreground = new SolidColorBrush(Colors.White);
+                fontLabel.FontFamily = new System.Windows.Media.FontFamily("Arial");
+                fontLabel.FontSize = 16;
+                fontLabel.FontStyle = System.Windows.FontStyles.Normal;
+                Canvas.SetTop(fontLabel, 185.00);
+
+                panel.Children.Add(fontLabel);
+
+                ComboBox fontList = new ComboBox();
+                fontList.Name = "fontList";
+                fontList.Width = 200;
+                // fontList.ItemsSource = Fonts.SystemFontFamilies;
+                fontList.IsDropDownOpen = false;
+
+                foreach (FontFamily font in Fonts.SystemFontFamilies)
                 {
-                    fontList.SelectedItem = comboBoxItem;
+
+                    ComboBoxItem comboBoxItem = new ComboBoxItem();
+                    comboBoxItem.Content = font.ToString();
+                    comboBoxItem.Tag = font;
+                    fontList.Items.Add(comboBoxItem);
+                    if (font.ToString() == Properties.Settings.Default.FontFamilyName)
+                    {
+                        fontList.SelectedItem = comboBoxItem;
+                    }
                 }
+                //fontList.SelectedIndex =fontList.Items.IndexOf(Properties.Settings.Default.FontFamilyName);
+                //fontList.SelectedIndex = fontList.Items.IndexOf(Properties.Settings.Default.FontFamilyName);
+                // MessageBox.Show(fontList.SelectedIndex.ToString());
+                Canvas.SetLeft(fontList, 100.0);
+                Canvas.SetTop(fontList, 185.00);
+
+                panel.Children.Add(fontList);
+
+
+                TextBlock timerExp = new TextBlock();
+                timerExp.Width = 400;
+                timerExp.Height = 100;
+                timerExp.TextWrapping = TextWrapping.WrapWithOverflow;
+                timerExp.Background = new SolidColorBrush(Colors.Transparent);
+                timerExp.Foreground = new SolidColorBrush(Colors.White);
+                timerExp.FontFamily = new System.Windows.Media.FontFamily("Arial");
+                timerExp.FontSize = 12;
+                timerExp.FontStyle = System.Windows.FontStyles.Normal;
+                timerExp.Text = "  Set the duration of your timer.\n  You can set it also pressing the button E next to play in the interface";
+                Canvas.SetTop(timerExp, 235.00);
+
+                panel.Children.Add(timerExp);
+
+                Label timerLabel = new Label();
+                timerLabel.Content = " Timer ";
+
+                timerLabel.Width = 400;
+                timerLabel.Height = 100;
+                timerLabel.Background = new SolidColorBrush(Colors.Transparent);
+                timerLabel.Foreground = new SolidColorBrush(Colors.White);
+                timerLabel.FontFamily = new System.Windows.Media.FontFamily("Arial");
+                timerLabel.FontSize = 16;
+                timerLabel.FontStyle = System.Windows.FontStyles.Normal;
+                Canvas.SetTop(timerLabel, 275.00);
+
+                panel.Children.Add(timerLabel);
+
+                TextBox textBox1 = new TextBox();
+                textBox1.Name = "sh";
+                textBox1.Text = Properties.Settings.Default.SavedHours.ToString();
+                textBox1.Width = 70;
+                textBox1.Height = 35;
+                textBox1.Background = new SolidColorBrush(Colors.LightGray);
+                textBox1.FontFamily = new System.Windows.Media.FontFamily("Arial");
+                textBox1.FontSize = 24;
+                textBox1.FontStyle = System.Windows.FontStyles.Normal;
+
+                Canvas.SetLeft(textBox1, 100.00);
+                Canvas.SetTop(textBox1, 275.00);
+
+                TextBox textBox2 = new TextBox();
+                textBox2.Name = "sm";
+                textBox2.Text = Properties.Settings.Default.SavedMinutes.ToString();
+                textBox2.Width = 70;
+                textBox2.Height = 35;
+                textBox2.Background = new SolidColorBrush(Colors.LightGray);
+                textBox2.FontFamily = new System.Windows.Media.FontFamily("Arial");
+                textBox2.FontSize = 24;
+                textBox2.FontStyle = System.Windows.FontStyles.Normal;
+                TextBox textBox3 = new TextBox();
+                textBox3.Name = "ss";
+                textBox3.Text = Properties.Settings.Default.SavedSeconds.ToString();
+                textBox3.Width = 70;
+                textBox3.Height = 35;
+                textBox3.Background = new SolidColorBrush(Colors.LightGray);
+                textBox3.FontFamily = new System.Windows.Media.FontFamily("Arial");
+                textBox3.FontSize = 24;
+                textBox3.FontStyle = System.Windows.FontStyles.Normal;
+
+                Canvas.SetLeft(textBox2, 173.00);
+                Canvas.SetTop(textBox2, 275.00);
+                Canvas.SetLeft(textBox3, 247.00);
+                Canvas.SetTop(textBox3, 275.00);
+
+                panel.Children.Add(textBox1);
+                panel.Children.Add(textBox2);
+                panel.Children.Add(textBox3);
+
+                Button okButton = new Button();
+                okButton.Width = 182;
+                okButton.Height = 33;
+                okButton.Style = (Style)FindResource("MEButtonStyle_2");
+
+                okButton.Tag = new BitmapImage(new Uri(@"pack://application:,,,/img/ok.png", UriKind.RelativeOrAbsolute)); ;
+
+                okButton.BorderBrush = new SolidColorBrush(Colors.Transparent);
+                okButton.BorderThickness = new System.Windows.Thickness(0);
+                okButton.MouseEnter += new MouseEventHandler(okButton_MouseEnter);
+                okButton.MouseLeave += new MouseEventHandler(okButton_MouseLeave);
+                okButton.Click += new RoutedEventHandler(okButton_Click);
+
+
+
+
+                Canvas.SetLeft(okButton, 220.0);
+                Canvas.SetTop(okButton, 400.0);
+                panel.Children.Add(okButton);
+
+                SettingsWindow.Content = panel;
+
+
+                SettingsWindow.Show();
             }
-            //fontList.SelectedIndex =fontList.Items.IndexOf(Properties.Settings.Default.FontFamilyName);
-            //fontList.SelectedIndex = fontList.Items.IndexOf(Properties.Settings.Default.FontFamilyName);
-            // MessageBox.Show(fontList.SelectedIndex.ToString());
-            Canvas.SetLeft(fontList, 100.0);
-            Canvas.SetTop(fontList, 175.00);
-
-            panel.Children.Add(fontList);
-
-
-            TextBlock timerExp = new TextBlock();
-            timerExp.Width = 400;
-            timerExp.Height = 100;
-            timerExp.TextWrapping = TextWrapping.WrapWithOverflow;
-            timerExp.Background = new SolidColorBrush(Colors.Transparent);
-            timerExp.Foreground = new SolidColorBrush(Colors.White);
-            timerExp.FontFamily = new System.Windows.Media.FontFamily("Arial");
-            timerExp.FontSize = 12;
-            timerExp.FontStyle = System.Windows.FontStyles.Normal;
-            timerExp.Text = "  Set the duration of your timer.\n  You can set it also pressing the button E next to play in the interface";
-            Canvas.SetTop(timerExp, 225.00);
-
-            panel.Children.Add(timerExp);
-
-            Label timerLabel = new Label();
-            timerLabel.Content = " Timer ";
-
-            timerLabel.Width = 400;
-            timerLabel.Height = 100;
-            timerLabel.Background = new SolidColorBrush(Colors.Transparent);
-            timerLabel.Foreground = new SolidColorBrush(Colors.White);
-            timerLabel.FontFamily = new System.Windows.Media.FontFamily("Arial");
-            timerLabel.FontSize = 16;
-            timerLabel.FontStyle = System.Windows.FontStyles.Normal;
-            Canvas.SetTop(timerLabel, 265.00);
-
-            panel.Children.Add(timerLabel);
-
-            TextBox textBox1 = new TextBox();
-            textBox1.Name = "sh";
-            textBox1.Text = Properties.Settings.Default.SavedHours.ToString();
-            textBox1.Width = 70;
-            textBox1.Height = 35;
-            textBox1.Background = new SolidColorBrush(Colors.LightGray);
-            textBox1.FontFamily = new System.Windows.Media.FontFamily("Arial");
-            textBox1.FontSize = 24;
-            textBox1.FontStyle = System.Windows.FontStyles.Normal;
-
-            Canvas.SetLeft(textBox1, 100.00);
-            Canvas.SetTop(textBox1, 265.00);
-
-            TextBox textBox2 = new TextBox();
-            textBox2.Name = "sm";
-            textBox2.Text = Properties.Settings.Default.SavedMinutes.ToString();
-            textBox2.Width = 70;
-            textBox2.Height = 35;
-            textBox2.Background = new SolidColorBrush(Colors.LightGray);
-            textBox2.FontFamily = new System.Windows.Media.FontFamily("Arial");
-            textBox2.FontSize = 24;
-            textBox2.FontStyle = System.Windows.FontStyles.Normal;
-            TextBox textBox3 = new TextBox();
-            textBox3.Name = "ss";
-            textBox3.Text = Properties.Settings.Default.SavedSeconds.ToString();
-            textBox3.Width = 70;
-            textBox3.Height = 35;
-            textBox3.Background = new SolidColorBrush(Colors.LightGray);
-            textBox3.FontFamily = new System.Windows.Media.FontFamily("Arial");
-            textBox3.FontSize = 24;
-            textBox3.FontStyle = System.Windows.FontStyles.Normal;
-
-            Canvas.SetLeft(textBox2, 173.00);
-            Canvas.SetTop(textBox2, 265.00);
-            Canvas.SetLeft(textBox3, 247.00);
-            Canvas.SetTop(textBox3, 265.00);
-
-            panel.Children.Add(textBox1);
-            panel.Children.Add(textBox2);
-            panel.Children.Add(textBox3);
-
-            Button okButton = new Button();
-            okButton.Width = 182;
-            okButton.Height = 33;
-            okButton.Style = (Style)FindResource("MEButtonStyle_2");
-
-            okButton.Tag = new BitmapImage(new Uri(@"pack://application:,,,/img/ok.png", UriKind.RelativeOrAbsolute)); ;
-
-            okButton.BorderBrush = new SolidColorBrush(Colors.Transparent);
-            okButton.BorderThickness = new System.Windows.Thickness(0);
-            // okButton.MouseEnter += new MouseEventHandler(closeButton_MouseEnter);
-            // okButton.MouseLeave += new MouseEventHandler(closeButton_MouseLeave);
-            okButton.Click += new RoutedEventHandler(okButton_Click);
-
-
-
-
-            Canvas.SetLeft(okButton, 220.0);
-            Canvas.SetTop(okButton, 400.0);
-            panel.Children.Add(okButton);
-
-            SettingsWindow.Content = panel;
-
-
-            SettingsWindow.Show();
-
 
 
         }
@@ -804,6 +825,28 @@ namespace MassEffectTimer
             SettingsWindow.Hide();
             
 
+        }
+        private void okButton_MouseLeave(object sender, EventArgs e)
+        {
+            // MessageBox.Show(sender.ToString());
+            var ele = sender as ContentControl;
+            ele.Tag = new BitmapImage(new Uri(@"pack://application:,,,/img/ok.png", UriKind.RelativeOrAbsolute));
+
+        }
+
+
+        private void okButton_MouseEnter(object sender, EventArgs e)
+        {
+            var ele = sender as ContentControl;
+            ele.Tag = new BitmapImage(new Uri(@"pack://application:,,,/img/close_o.png", UriKind.RelativeOrAbsolute));
+
+        }
+
+        private void CloseApp(object sender, EventArgs e)
+        {
+            Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+            Application.Current.Shutdown();
+            
         }
     }
     }

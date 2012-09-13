@@ -151,9 +151,23 @@ namespace MassEffectTimer.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap exit {
+            get {
+                object obj = ResourceManager.GetObject("exit", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap ico_png_32 {
             get {
                 object obj = ResourceManager.GetObject("ico_png_32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap Icon_N7_13 {
+            get {
+                object obj = ResourceManager.GetObject("Icon_N7_13", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

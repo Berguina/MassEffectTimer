@@ -64,6 +64,7 @@
         <Style x:Key="ContextMenuStyle1" TargetType="{x:Type ContextMenu}">
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="BorderBrush" Value="#333333"/>
+            
         </Style>
     </Window.Resources>
     <Window.OpacityMask>
@@ -113,7 +114,12 @@
                 </MenuItem>
                 <MenuItem Header="About" Name="About" Click="About_Click">
                     <MenuItem.Icon>
-                        <Image Source="/MassEffectTimer;component/img/Icon_N7_16.png" Width="32" Height="16" />
+                        <Image Source="/MassEffectTimer;component/img/Icon_N7_16.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Exit" Name="Exit" InputGestureText="Alt-F4" Click="CloseApp">
+                    <MenuItem.Icon>
+                        <Image Source="/MassEffectTimer;component/img/exit.png" />
                     </MenuItem.Icon>
                 </MenuItem>
             </ContextMenu>
