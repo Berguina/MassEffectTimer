@@ -186,9 +186,16 @@ namespace MassEffectTimer.Properties {
             }
         }
         
-        internal static System.Drawing.Bitmap ok {
+        internal static System.Drawing.Bitmap ok1 {
             get {
-                object obj = ResourceManager.GetObject("ok", resourceCulture);
+                object obj = ResourceManager.GetObject("ok1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap ok1_o {
+            get {
+                object obj = ResourceManager.GetObject("ok1_o", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
