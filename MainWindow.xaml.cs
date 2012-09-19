@@ -52,7 +52,7 @@ namespace MassEffectTimer
         public TextBox textBox2;
         public TextBox textBox3;
         public Button confirmButton;
-        public Window dynamicPanelReady;
+        public Window dynamicPanelReady=new Window();
         public SoundPlayer player;
         public SoundPlayer player1;
         public Window AboutWindow=new Window();
@@ -113,7 +113,7 @@ namespace MassEffectTimer
                 {
                     total_time = seconds + minutes * 60 + hours * 3600;
                     current_rest_time = total_time;
-                    progressBar1.Minimum = 1;
+                    progressBar1.Minimum = 0;
                     progressBar1.Maximum =  total_time;
 
                     // MessageBox.Show(total_time + " - " + progressBar1.Value);
@@ -164,10 +164,12 @@ namespace MassEffectTimer
                 seconds = 0;
                 btnPlay.Tag = new BitmapImage(new Uri(@"pack://application:,,,/img/button_play9_disabled.png"));
                 btnPlay.IsEnabled = false;
+                btnEdit.IsEnabled = false;
+
                 DisplayText(hours, minutes, seconds);
                 progressBar1.Value = total_time;
 
-                dynamicPanelReady = new Window();
+                //dynamicPanelReady = new Window();
                 dynamicPanelReady.Background = new SolidColorBrush(Colors.Transparent);
                 dynamicPanelReady.Width = 540;
 
@@ -193,20 +195,12 @@ namespace MassEffectTimer
 
 
 
-                //Assembly assembly = Assembly.GetExecutingAssembly();
-                //player = new SoundPlayer(assembly.GetManifestResourceStream("MassEffectTimer.upload_completed_wav.wav"));
-                //player.PlaySync();
-                //player = new SoundPlayer(Assembly.GetExecutingAssembly().GetManifestResourceStream("MassEffectTimer.biosnd_end001.wav"));
-                //player.PlaySync();
-                //player = new SoundPlayer(Assembly.GetExecutingAssembly().GetManifestResourceStream("MassEffectTimer.biosnd_end001.wav"));
-                //player.PlayLooping();
 
                 if (player.IsLoadCompleted && player1.IsLoadCompleted){
                     player.PlaySync();
                     player1.PlayLooping();
                 }
-                //DisplayText(hours, minutes, seconds);
-                
+ 
 
 
 
@@ -415,7 +409,7 @@ namespace MassEffectTimer
                 print_hours = false;
             }
             DisplayText(hours, minutes, seconds);
-            progressBar1.Value = 1;
+            progressBar1.Value = 0;
             btnPlay.Tag = new BitmapImage(new Uri(@"pack://application:,,,/img/button_play9.png"));
             btnPlay.IsEnabled = true;
 
@@ -441,8 +435,11 @@ namespace MassEffectTimer
             btnPlay.Tag = new BitmapImage(new Uri(@"pack://application:,,,/img/button_play9.png"));
             btnPlay.IsEnabled = true;
             btnEdit.Tag = new BitmapImage(new Uri(@"pack://application:,,,/img/button_edit2.png"));
+            btnEdit.IsEnabled = true;
+
             player.Stop();
-            //playerThread.Join();
+            player1.Stop();
+
 
 
         }
@@ -857,6 +854,7 @@ namespace MassEffectTimer
 
         private void CloseApp(object sender, EventArgs e)
         {
+
             Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
             Application.Current.Shutdown();
             

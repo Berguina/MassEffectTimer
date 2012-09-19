@@ -61,6 +61,7 @@ namespace MassEffectTimer
         public void Start()
         {
             _thread = new Thread(DoWork);
+            _thread.IsBackground = true;
             _thread.Start();
         }
 
