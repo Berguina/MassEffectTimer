@@ -8,9 +8,9 @@ using System.Windows;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("MassEffectTimer")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Mass Effect Themed Tea Timer")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("gscreens.com")]
 [assembly: AssemblyProduct("MassEffectTimer")]
 [assembly: AssemblyCopyright("Copyright ©  2012")]
 [assembly: AssemblyTrademark("")]
