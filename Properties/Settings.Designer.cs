@@ -70,5 +70,29 @@ namespace MassEffectTimer.Properties {
                 this["FontFamilyName"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int Top {
+            get {
+                return ((int)(this["Top"]));
+            }
+            set {
+                this["Top"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int Left {
+            get {
+                return ((int)(this["Left"]));
+            }
+            set {
+                this["Left"] = value;
+            }
+        }
     }
 }

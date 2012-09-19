@@ -14,5 +14,11 @@
     <Setting Name="FontFamilyName" Type="System.String" Scope="User">
       <Value Profile="(Default)">Mass Effect Font</Value>
     </Setting>
+    <Setting Name="Top" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="Left" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

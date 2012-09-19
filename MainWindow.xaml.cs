@@ -59,12 +59,17 @@ namespace MassEffectTimer
         public Window SettingsWindow=new Window();
         public bool aboutWindowCreated = false;
         public bool SettingsWindowCreated = false;
+        public bool dynamicPanelReadyCreated = false;
 
 
 
         public MainWindow()
         {
             InitializeComponent();
+            Application.Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
+           
+
+            
 
             hours = Properties.Settings.Default.SavedHours;
             minutes = Properties.Settings.Default.SavedMinutes;
@@ -87,6 +92,7 @@ namespace MassEffectTimer
             player.LoadAsync();
             player1 = new SoundPlayer(assembly.GetManifestResourceStream("MassEffectTimer.biosnd_end001.wav"));
             player1.LoadAsync();
+            dynamicPanelReady.Closed += new EventHandler(Window_Closed);
 
         }
 
@@ -94,9 +100,33 @@ namespace MassEffectTimer
         {
             if (e.ChangedButton == MouseButton.Left)
             {
+                //Window wnd = Window.GetWindow(sender.);
                 this.DragMove();
+                Point pos = PointToScreen(e.MouseDevice.GetPosition(null));
+
+                Properties.Settings.Default.Left = System.Convert.ToInt32(pos.X);
+                Properties.Settings.Default.Top = System.Convert.ToInt32(pos.Y);
+                Properties.Settings.Default.Save();
+
             }
 
+        }
+
+        private void Window_Loaded(object sender, EventArgs e)
+        {
+            int top = Properties.Settings.Default.Top;
+            int left = Properties.Settings.Default.Left;
+
+            if (top > 0 && left > 0) {
+                this.Left = left;
+                this.Top = top;
+                
+            }
+        
+        }
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            Application.Current.Shutdown();
         }
         private void btnPlay_Click(System.Object sender, System.Windows.RoutedEventArgs e)
         {
@@ -170,23 +200,28 @@ namespace MassEffectTimer
                 progressBar1.Value = total_time;
 
                 //dynamicPanelReady = new Window();
-                dynamicPanelReady.Background = new SolidColorBrush(Colors.Transparent);
-                dynamicPanelReady.Width = 540;
+                if (!dynamicPanelReadyCreated)
+                {
+                    dynamicPanelReady.Background = new SolidColorBrush(Colors.Transparent);
+                    dynamicPanelReady.Width = 540;
 
-                dynamicPanelReady.Height = 125;
-                dynamicPanelReady.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+                    dynamicPanelReady.Height = 125;
+                    dynamicPanelReady.WindowStartupLocation = WindowStartupLocation.CenterScreen;
 
-                dynamicPanelReady.AllowsTransparency = true;
-                dynamicPanelReady.WindowStyle = WindowStyle.None;
+                    dynamicPanelReady.AllowsTransparency = true;
+                    dynamicPanelReady.WindowStyle = WindowStyle.None;
+                    dynamicPanelReadyCreated = true;
 
+                    Button readyButton = new Button();
+                    readyButton.Width = 529;
+                    readyButton.Height = 105;
+                    readyButton.Style = (Style)FindResource("MEButtonStyle_2");
+                    readyButton.Tag = new BitmapImage(new Uri(@"pack://application:,,,/img/completed1.png", UriKind.RelativeOrAbsolute));
+                    readyButton.Click += new RoutedEventHandler(readyButton_Click);
+                    dynamicPanelReady.Content = readyButton;
 
-                Button readyButton = new Button();
-                readyButton.Width = 529;
-                readyButton.Height = 105;
-                readyButton.Style = (Style)FindResource("MEButtonStyle_2");
-                readyButton.Tag = new BitmapImage(new Uri(@"pack://application:,,,/img/completed1.png", UriKind.RelativeOrAbsolute));
-                readyButton.Click += new RoutedEventHandler(readyButton_Click);
-                dynamicPanelReady.Content = readyButton;
+                }
+
 
 
                
@@ -855,7 +890,7 @@ namespace MassEffectTimer
         private void CloseApp(object sender, EventArgs e)
         {
 
-            Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+            
             Application.Current.Shutdown();
             
         }
@@ -864,5 +899,11 @@ namespace MassEffectTimer
         {
             System.Diagnostics.Process.Start(e.Uri.ToString());
         }
+
+
+        // private void dynamicPanelReady_Closing(object sender, CancelEventArgs e)
+        //{
+        //    Application.Current.Shutdown();
+        //}
     }
     }
