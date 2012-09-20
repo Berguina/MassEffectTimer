@@ -658,8 +658,8 @@ namespace MassEffectTimer
                     settingsExp.FontFamily = new System.Windows.Media.FontFamily("Arial");
                     settingsExp.FontSize = 12;
                     settingsExp.FontStyle = System.Windows.FontStyles.Normal;
-                    // settingsExp.Text = "  Set fonts for your timer.\n  You can download Mass Effect fonts from the Web for a better result \n (http://sta.sh/013u2wkdr1j9).";
-                    settingsExp.Inlines.Add("  Set fonts for your timer.\n  You can download Mass Effect fonts from the Web for a better result \n  ");
+                    // settingsExp.Text = "  Set the font for your timer.\n  You can download Mass Effect font from the Web for a better result \n (http://sta.sh/013u2wkdr1j9).";
+                    settingsExp.Inlines.Add("  Set fonts for your timer.\n  You can download Mass Effect font from the Web for a better result \n  ");
                     Hyperlink hyperLink = new Hyperlink()
                     {
                         NavigateUri = new Uri("http://sta.sh/013u2wkdr1j9")
@@ -671,7 +671,7 @@ namespace MassEffectTimer
 
                     panel.Children.Add(settingsExp);
                     Label fontLabel = new Label();
-                    fontLabel.Content = " Fonts ";
+                    fontLabel.Content = " Font ";
 
                     fontLabel.Width = 400;
                     fontLabel.Height = 100;
@@ -690,6 +690,7 @@ namespace MassEffectTimer
                     // fontList.ItemsSource = Fonts.SystemFontFamilies;
                     fontList.IsDropDownOpen = false;
 
+                    //bool found = false;
                     foreach (FontFamily font in Fonts.SystemFontFamilies)
                     {
 
@@ -700,8 +701,22 @@ namespace MassEffectTimer
                         if (font.ToString() == Properties.Settings.Default.FontFamilyName)
                         {
                             fontList.SelectedItem = comboBoxItem;
+                            //found = true;
                         }
                     }
+
+                //    if (!found) {
+                //        Properties.Settings.Default.FontFamilyName = "Arial";
+                //        Properties.Settings.Default.Save();
+                //        foreach (ComboBoxItem item in fontList.Items) {
+                //          if(item.Tag.Equals(Properties.Settings.Default.FontFamilyName))
+                //          {
+                //               fontList.SelectedItem = item;
+                //              found=true;
+                //          }
+                //        }
+                //}
+
                     //fontList.SelectedIndex =fontList.Items.IndexOf(Properties.Settings.Default.FontFamilyName);
                     //fontList.SelectedIndex = fontList.Items.IndexOf(Properties.Settings.Default.FontFamilyName);
                     // MessageBox.Show(fontList.SelectedIndex.ToString());
@@ -823,6 +838,9 @@ namespace MassEffectTimer
                     var fontList = c as ComboBox;
                     var selectedFont = fontList.SelectedItem.ToString().Substring(38);
                     
+                    if(selectedFont.ToString()==""){
+                        selectedFont = "Arial";
+                    }
                     Properties.Settings.Default.FontFamilyName = selectedFont;
                     Properties.Settings.Default.Save();
 
