@@ -474,6 +474,8 @@ namespace MassEffectTimer
 
             player.Stop();
             player1.Stop();
+            this.Settings.IsEnabled = true;
+            waker.Stop();
 
 
 
