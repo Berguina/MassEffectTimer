@@ -691,7 +691,8 @@ namespace MassEffectTimer
                     fontList.IsDropDownOpen = false;
 
                     //bool found = false;
-                    foreach (FontFamily font in Fonts.SystemFontFamilies)
+                    IOrderedEnumerable<FontFamily> sortedFonts = Fonts.SystemFontFamilies.OrderBy(f => f.ToString());
+                    foreach (FontFamily font in sortedFonts)
                     {
 
                         ComboBoxItem comboBoxItem = new ComboBoxItem();
@@ -836,13 +837,17 @@ namespace MassEffectTimer
                 if (c is System.Windows.Controls.ComboBox) {
 
                     var fontList = c as ComboBox;
-                    var selectedFont = fontList.SelectedItem.ToString().Substring(38);
-                    
-                    if(selectedFont.ToString()==""){
-                        selectedFont = "Arial";
+                    if (fontList.SelectedItem != null)
+                    {
+                        var selectedFont = fontList.SelectedItem.ToString().Substring(38);
+
+
+                        if (selectedFont != null && selectedFont.ToString() != "")
+                        {
+                            Properties.Settings.Default.FontFamilyName = selectedFont;
+                            Properties.Settings.Default.Save();
+                        }
                     }
-                    Properties.Settings.Default.FontFamilyName = selectedFont;
-                    Properties.Settings.Default.Save();
 
                 }
                 if (c is System.Windows.Controls.TextBox) {
