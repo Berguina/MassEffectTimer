@@ -210,6 +210,7 @@ namespace MassEffectTimer
 
                     dynamicPanelReady.AllowsTransparency = true;
                     dynamicPanelReady.WindowStyle = WindowStyle.None;
+                    dynamicPanelReady.Topmost = true;
                     dynamicPanelReadyCreated = true;
 
                     Button readyButton = new Button();
@@ -418,13 +419,42 @@ namespace MassEffectTimer
         private void confirmButton_Click(object sender, EventArgs e)
         {
 
-            Properties.Settings.Default.SavedHours = System.Convert.ToInt32(textBox1.Text);
-            Properties.Settings.Default.SavedMinutes = System.Convert.ToInt32(textBox2.Text);
-            Properties.Settings.Default.SavedSeconds = System.Convert.ToInt32(textBox3.Text);
-            Properties.Settings.Default.Save();
-            hours = System.Convert.ToInt32(textBox1.Text);
-            minutes = System.Convert.ToInt32(textBox2.Text);
-            seconds = System.Convert.ToInt32(textBox3.Text);
+            int  h= -1;
+            int  m= -1;
+            int s = -1;
+            try
+            {
+
+                h = System.Convert.ToInt32(textBox1.Text);
+                m = System.Convert.ToInt32(textBox2.Text);
+                s = System.Convert.ToInt32(textBox3.Text);
+            }
+            catch { }
+
+            if (h >= 0 && m >= 0 && s >= 0)
+            {
+                Properties.Settings.Default.SavedHours = h;
+                Properties.Settings.Default.SavedMinutes =m;
+                Properties.Settings.Default.SavedSeconds = s;
+                Properties.Settings.Default.Save();
+                hours = h;
+                minutes = m;
+                seconds = s;
+                if (hours > 0)
+                {
+                    print_hours = true;
+                }
+                else
+                {
+                    print_hours = false;
+                }
+                
+            }
+
+
+               
+
+            
             this.dynamicPanel.Children.Remove(textBox1);
             this.dynamicPanel.Children.Remove(textBox2);
             this.dynamicPanel.Children.Remove(textBox3);
@@ -433,21 +463,10 @@ namespace MassEffectTimer
             textBox1 = null;
             textBox2 = null;
             textBox3 = null;
-
-
-            if (hours > 0)
-            {
-                print_hours = true;
-            }
-            else
-            {
-                print_hours = false;
-            }
             DisplayText(hours, minutes, seconds);
             progressBar1.Value = 0;
             btnPlay.Tag = new BitmapImage(new Uri(@"pack://application:,,,/img/button_play9.png"));
             btnPlay.IsEnabled = true;
-
         }
 
         private void readyButton_Click(object sender, EventArgs e)
@@ -834,6 +853,13 @@ namespace MassEffectTimer
             var ele = sender as ContentControl;
             var panel = ele.Parent as Panel;
 
+
+            int h = -1;
+            int m = -1;
+            int s = -1;
+
+
+           
             for (var i = 0; i < panel.Children.Count; i++) {
                 var c=panel.Children[i];
                 if (c is System.Windows.Controls.ComboBox) {
@@ -852,39 +878,48 @@ namespace MassEffectTimer
                     }
 
                 }
+
+               
                 if (c is System.Windows.Controls.TextBox) {
                     var val = c as TextBox;
                     if (val.Name == "sh") {
-                        Properties.Settings.Default.SavedHours = System.Convert.ToInt32(val.Text);
+                        try { h = System.Convert.ToInt32(val.Text); }
+                        catch { }
+                        
 
                     }
                     else if (val.Name == "sm") {
-                        Properties.Settings.Default.SavedMinutes = System.Convert.ToInt32(val.Text);
+                        try { m = System.Convert.ToInt32(val.Text); }
+                        catch { }
                     }else if(val.Name=="ss"){
 
-                        Properties.Settings.Default.SavedSeconds = System.Convert.ToInt32(val.Text);
+                        try { s = System.Convert.ToInt32(val.Text); }
+                        catch { }
                     }
                 }
                 //MessageBox.Show(panel.Children[i].GetType().ToString());
             }
 
+            if (h >= 0 && m >= 0 && s >= 0)
+            {
+                Properties.Settings.Default.SavedHours = h;
+                Properties.Settings.Default.SavedMinutes = m;
+                Properties.Settings.Default.SavedSeconds = s;
+                
+                hours = h;
+                minutes = m;
+                seconds = s;
+                if (hours > 0)
+                {
+                    print_hours = true;
+                }
+                else
+                {
+                    print_hours = false;
+                }
+
+            }
             Properties.Settings.Default.Save();
-            
-
-            hours = Properties.Settings.Default.SavedHours;
-            minutes = Properties.Settings.Default.SavedMinutes;
-            seconds = Properties.Settings.Default.SavedSeconds;
-
-            
-
-            if (hours > 0)
-            {
-                print_hours = true;
-            }
-            else
-            {
-                print_hours = false;
-            }
             DisplayText(hours, minutes, seconds);
             total_time = seconds + minutes * 60 + hours * 3600;
             progressBar1.Minimum = 0;
@@ -893,6 +928,7 @@ namespace MassEffectTimer
             btnPlay.Tag = new BitmapImage(new Uri(@"pack://application:,,,/img/button_play9.png"));
             btnPlay.IsEnabled = true;
             SettingsWindow.Hide();
+            
             
 
         }
